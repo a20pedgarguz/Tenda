@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div v-if="estaActiu('portada')" class="portada">
+            <h1>Bienvenidos a nuestra tienda!!!</h1>
+            <button @click="mostrarDiv('tenda')" class="btn btn-info">Mostrar tienda</button><br>
+        </div>
+        <div v-if="estaActiu('tenda')" class="tenda">
+            <h1>Productos disponibles</h1>
+            <div class="botons">
+              <button @click="mostrarDiv('portada')" class="btn btn-info">Mostrar portada</button>
+              <button @click="mostrarDiv('checkout')" class="btn btn-info">Mostrar checkout</button>
+              <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Carrito
+              </button>
+            </div>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                <div v-for="(actual,index) in productesComprats">
+                  {{ actual.nombre }} x{{actual.cantidad}}
+                  <button class="btn btn-danger" @click="eliminarProducte(index)">Eliminar</button>
+                  <button class="btn btn-danger" v-if="productesComprats[index].cantidad > 1" @click="treureCantitat(index)">Restar 1</button>
+                </div>
+                <h4>Precio Total: {{ total }}€</h4>
+              </div>
+            </div>
+            <div class="container">
+              <div class="row">
+                <div v-for="actual in productes" class="col-md-3">
+                  <div class="card mb-3">
+                    <img :src="actual.img" class="card-img-top" alt="Imagen del producto" style="width: 100%; height: auto;">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ actual.nombre }}</h5>
+                      <p class="card-text">{{ actual.descripcion }}</p>
+                      <p class="card-text">Precio: {{ actual.precio }}</p>
+                      <button class="btn btn-danger" @click="sumarCarret(actual)">Añadir al carrito</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div v-if="estaActiu('checkout')" class="checkout">
+          <h1>Checkout</h1>
+          <div class="botonsch">
+            <button @click="mostrarDiv('portada')" class="btn btn-info">Mostrar portada</button>
+            <button @click="mostrarDiv('tenda')" class="btn btn-info">Mostrar tenda</button><br>
+          </div>
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="contingut" v-for="(actual, index) in productesComprats">
+                      <div class="card">
+                          <div class="card-body">
+                              <h3>{{ actual.nombre }}</h3>
+                              <h6 class="card-subtitle mb-2 text-body-secondary">Cantidad: {{ actual.cantidad }}</h6>
+                              <p>Precio por producto: {{ actual.precio }}</p>
+                              <p v-if="productesComprats[index].cantidad > 1">Precio cantidad por producto: {{ actual.precio * actual.cantidad }}</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <form class="sticky-form" @submit.prevent="guardarLocalStorage">
+                      <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" v-model="nombre" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" v-model="email" required>
+                       
+                    </div>
+                    <button class="btn btn-success" @click="guardarLocalStorage">Guardar datos</button>
+                </form>
+                <button @click="borrarLocalStorage" class="btn btn-danger">No soy {{nombre}}</button>
+
+                
+            </div>
+            <h2 class="a">Precio Total: {{ total }}€</h2>
+        </div>
+    </div>
+    <script src="script.js" type="module"></script>
+</body>
+</html>
